@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ChangeEvent, FocusEvent } from "react";
+import { ChangeEvent, FocusEvent, ReactNode } from "react";
+import { Socket } from "socket.io-client";
 
 export interface ISvgComponent {
   size?: number;
@@ -63,4 +64,17 @@ export interface IBack {
 
 export interface IStatus {
   text: string;
+}
+
+export type ISocketStatus = "connected" | "disconnected" | "error";
+
+export interface SocketContextType {
+  socket: Socket | null;
+  connectionStatus: ISocketStatus;
+  errorMessage: string | null;
+}
+
+// Props type for the provider
+export interface SocketProviderProps {
+  children: ReactNode; // Allows any valid React child element(s)
 }

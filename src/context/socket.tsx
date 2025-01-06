@@ -1,32 +1,19 @@
 "use client";
 // SocketContext.tsx
 import { AppConfig } from "@/config/appConfig";
-import React, {
-  ReactNode,
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import {
+  ISocketStatus,
+  SocketContextType,
+  SocketProviderProps,
+} from "@/types/common";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import io, { Socket } from "socket.io-client";
 
 // The URL of your backend server
 const SOCKET_URL = AppConfig.API_URL;
 
-// Define the context type
-interface SocketContextType {
-  socket: Socket | null;
-}
-
-// Props type for the provider
-interface SocketProviderProps {
-  children: ReactNode; // Allows any valid React child element(s)
-}
-
-// Create a Context for the socket with the correct type
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
-// Create a custom hook to use the socket context
 export const useSocket = (): SocketContextType => {
   const context = useContext(SocketContext);
   if (!context) {
@@ -35,15 +22,40 @@ export const useSocket = (): SocketContextType => {
   return context;
 };
 
-// Create the SocketProvider component
 export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
+  const [connectionStatus, setConnectionStatus] =
+    useState<ISocketStatus>("disconnected");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    // Create a new socket connection when the component mounts
+    // Create socket instance with error handling
     const socketInstance = io(SOCKET_URL, {
-      withCredentials: true, // Important for CORS
+      withCredentials: true,
+      transports: ["websocket", "polling"],
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
     });
+
+    // Connection event handlers
+    socketInstance.on("connect", () => {
+      console.log("Socket connected:", socketInstance.id);
+      setConnectionStatus("connected");
+      setErrorMessage(null);
+    });
+
+    socketInstance.on("connect_error", (error) => {
+      console.error("Socket connection error:", error);
+      setConnectionStatus("error");
+      setErrorMessage(error.message);
+    });
+
+    socketInstance.on("disconnect", (reason) => {
+      console.log("Socket disconnected:", reason);
+      setConnectionStatus("disconnected");
+    });
+
     setSocket(socketInstance);
 
     // Clean up the socket when the component unmounts
@@ -53,7 +65,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   }, []);
 
   return (
-    <SocketContext.Provider value={{ socket }}>
+    <SocketContext.Provider value={{ socket, connectionStatus, errorMessage }}>
       {children}
     </SocketContext.Provider>
   );

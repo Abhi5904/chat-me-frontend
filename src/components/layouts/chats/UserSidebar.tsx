@@ -16,7 +16,7 @@ import React, { useEffect, useState } from "react";
 
 const UserSidebar = ({ setTab, tab }: IUserSidebar) => {
   const { user } = useUser();
-  const { socket } = useSocket();
+  const { socket, connectionStatus, errorMessage } = useSocket();
   const [unreadInvitation, setUnreadInvitation] = useState<number | null>(null);
 
   const handleChangeTab = (tab: TabType) => {
@@ -25,7 +25,10 @@ const UserSidebar = ({ setTab, tab }: IUserSidebar) => {
   };
 
   useEffect(() => {
-    console.log("event", `${SocketEventName.READ_INVITATION}-${user?._id}`);
+    console.log(connectionStatus);
+    if (connectionStatus === "error") {
+      console.error("Socket connection error:", errorMessage);
+    }
     if (socket && user) {
       socket.on(`${SocketEventName.UNREAD_INVITATION}-${user?._id}`, (data) => {
         console.log(data, "un read event");
@@ -36,7 +39,7 @@ const UserSidebar = ({ setTab, tab }: IUserSidebar) => {
         setUnreadInvitation(data?.unreadCount);
       });
     }
-  }, [user, socket]);
+  }, [user, socket, connectionStatus, errorMessage]);
 
   useEffect(() => {
     const fetchUnreadInvitations = async () => {
