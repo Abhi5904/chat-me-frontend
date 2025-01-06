@@ -10,7 +10,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import io, { Socket } from "socket.io-client";
 
 // The URL of your backend server
-const SOCKET_URL = AppConfig.API_URL;
+const SOCKET_URL = AppConfig.SOCKET_URL;
 
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
