@@ -41,7 +41,9 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
 
   useEffect(() => {
     // Create a new socket connection when the component mounts
-    const socketInstance = io(SOCKET_URL);
+    const socketInstance = io(SOCKET_URL, {
+      withCredentials: true, // Important for CORS
+    });
     setSocket(socketInstance);
 
     // Clean up the socket when the component unmounts

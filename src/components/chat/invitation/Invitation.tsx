@@ -65,7 +65,7 @@ const Invitation = () => {
           />
         </div>
       </div>
-      <div className="flex items-center gap-3 justify-start w-full mt-2 px-4">
+      <div className="flex items-center gap-3 justify-start w-full mt-3 px-4">
         {InvitationTab &&
           InvitationTab?.length > 0 &&
           InvitationTab?.map((data, index) => (
@@ -89,12 +89,12 @@ const Invitation = () => {
         </div>
       ) : (
         (sendInvitations || receiveInvitations) && (
-          <div className="flex flex-col justify-start w-full h-[calc(100%-152px)] overflow-y-auto">
+          <div className="flex flex-col justify-start w-full h-[calc(100%-152px)] overflow-y-auto pt-3">
             {tab === InvitationTabValue.SEND
               ? sendInvitations?.map((data) => (
                   <div
                     key={data?._id}
-                    className="flex items-center justify-between gap-3 w-full border-b p-4 hover:bg-accent"
+                    className="flex items-center justify-between gap-3 w-full border-b p-4 hover:bg-accent first:border-t"
                   >
                     <div className="flex items-center justify-start gap-3">
                       <div className="flex items-center justify-center rounded-full min-w-10 min-h-10 border hover:bg-accent">
@@ -126,7 +126,7 @@ const Invitation = () => {
               : receiveInvitations?.map((data) => (
                   <div
                     key={data?._id}
-                    className="flex items-center justify-between gap-3 w-full border-b p-4 hover:bg-accent"
+                    className="flex items-center justify-between gap-3 w-full border-b p-4 hover:bg-accent first:border-t"
                   >
                     <div className="flex items-center justify-start gap-3">
                       <div className="flex items-center justify-center rounded-full min-w-10 min-h-10 border hover:bg-accent">
