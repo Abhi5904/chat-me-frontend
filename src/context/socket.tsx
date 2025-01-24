@@ -49,6 +49,11 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
 
     socketInstance.on("connect_error", (error) => {
       console.log("Socket connection error:", error);
+      console.log("Full Socket Connection Error:", {
+        message: error.message,
+        name: error.name,
+        stack: error.stack,
+      });
       setConnectionStatus("error");
       setErrorMessage(error.message);
     });
