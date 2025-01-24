@@ -28,16 +28,21 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     useState<ISocketStatus>("disconnected");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   console.log(SOCKET_URL, "SOCKET_URL");
+
   useEffect(() => {
     // Create socket instance with error handling
     const socketInstance = io(SOCKET_URL, {
-      secure: true, // Force secure connection
+      // cert: "",
+      // key: "",
+      path: "/socket",
+      secure: true,
       rejectUnauthorized: false,
-      withCredentials: true,
       transports: ["websocket", "polling"],
       reconnection: true,
       reconnectionAttempts: 5,
-      reconnectionDelay: 1000,
+      timeout: 10000,
+      forceNew: true,
+      withCredentials: true,
     });
 
     // Connection event handlers
