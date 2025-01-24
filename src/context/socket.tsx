@@ -27,10 +27,12 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const [connectionStatus, setConnectionStatus] =
     useState<ISocketStatus>("disconnected");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
+  console.log(SOCKET_URL, "SOCKET_URL");
   useEffect(() => {
     // Create socket instance with error handling
     const socketInstance = io(SOCKET_URL, {
+      secure: true, // Force secure connection
+      rejectUnauthorized: false,
       withCredentials: true,
       transports: ["websocket", "polling"],
       reconnection: true,
@@ -46,7 +48,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     });
 
     socketInstance.on("connect_error", (error) => {
-      console.error("Socket connection error:", error);
+      console.log("Socket connection error:", error);
       setConnectionStatus("error");
       setErrorMessage(error.message);
     });
